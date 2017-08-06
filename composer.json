@@ -1,6 +1,8 @@
 {
     "require": {
-        "symfony/console": "^3.3"
+        "symfony/console": "^3.3",
+        "pubnub/pubnub": "~4.0.0",
+        "mcfish/libmqtt": "^1.0"
     },
     "autoload": {
         "psr-4": {

@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use AO\Gateway;
 
 class EmitCommand extends Command
 {
@@ -56,6 +57,13 @@ class EmitCommand extends Command
           InputOption::VALUE_OPTIONAL,
           'Limit the number of messages emitted',
           100
+      )
+      ->addOption(
+          'gateway',
+          null,
+          InputOption::VALUE_OPTIONAL,
+          'The gateway to emit the message out to.',
+          'stdout'
       );
     }
 
@@ -91,15 +99,27 @@ class EmitCommand extends Command
         }
 
         $msg = substr($msg, 0, $size);
-        $this->emit($msg, $output);
+        $this->emit($msg, $input->getOption('gateway'), $output);
         usleep($sleep);
       }
       while ($input->getOption('limit') > $count);
     }
 
-    protected function emit($message, OutputInterface $output) {
+    protected function emit($message, $gateway, OutputInterface $output) {
+      switch ($gateway) {
+        case 'iot':
+          $channel = new Gateway\Iot();
+          break;
 
-      $output->writeln($message);
+        case 'pubnub':
+          $channel = new Gateway\PubNub();
+          break;
+
+        default:
+          $channel = new Gateway\StdOut();
+          break;
+      }
+      $channel->emit('test', $message);
       return $this;
     }
 }
