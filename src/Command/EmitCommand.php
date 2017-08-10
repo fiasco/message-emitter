@@ -89,8 +89,11 @@ class EmitCommand extends Command
           $count++;
         }
 
+        list($time, $ms) = explode('.', microtime(TRUE));
+        $ms = substr($ms, 0, -1);
+
         $msg = [];
-        $msg['Date'] = date('c');
+        $msg['Date'] = str_replace('+', ":$ms+", date('c', $time));
         $msg['Content-Length'] = $size;
         $msg['Cache-Control'] = 'max-age=' . $sleep/1000000;
         $msg['E-Tag'] = $count;

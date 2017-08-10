@@ -10,7 +10,7 @@ class StdOut implements GatewayInterface {
     $output = new ConsoleOutput();
 
     $output->writeln("[{$msg['Date']}] $topic {$msg['Status']} {$msg['E-Tag']}");
-    // $output->writeln(json_encode($msg));
+    // $output->writeln(json_encode($msg, JSON_PRETTY_PRINT));
   }
 
 }
