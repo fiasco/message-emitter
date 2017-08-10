@@ -89,16 +89,25 @@ class EmitCommand extends Command
           $count++;
         }
 
-        $msg = 'Date: ' . date('c') . PHP_EOL;
-        $msg .= 'Content-Length: ' . $size . ' bytes' . PHP_EOL;
-        $msg .= 'Cache-Control: max-age=' . $sleep/1000000 . PHP_EOL;
-        $msg .= 'E-Tag: ' . $count . PHP_EOL;
-        $msg .= 'Status: ' . $status . PHP_EOL;
-        while (strlen($msg) < $size) {
-          $msg .= md5($msg);
+        $msg = [];
+        $msg['Date'] = date('c');
+        $msg['Content-Length'] = $size;
+        $msg['Cache-Control'] = 'max-age=' . $sleep/1000000;
+        $msg['E-Tag'] = $count;
+        $msg['Status'] = $status;
+        $msg['Message'] = md5(mt_rand(0, 10000));
+
+        $payload = json_encode($msg);
+
+        while (strlen($payload) < $size) {
+          $msg['Message'] .= md5($msg['Message']);
+          $payload = json_encode($msg);
         }
 
-        $msg = substr($msg, 0, $size);
+        if (strlen($payload) > $size) {
+          $msg['Message'] = substr($msg['Message'], strlen($payload) - $size);
+        }
+
         $this->emit($msg, $input->getOption('gateway'), $output);
         usleep($sleep);
       }

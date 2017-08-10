@@ -2,7 +2,7 @@
 
 namespace AO\gateway;
 
-use PubNub\PubNub;
+use PubNub\PubNub as PubNubClient;
 use PubNub\PNConfiguration;
 
 class PubNub extends StdOut {
@@ -15,12 +15,13 @@ class PubNub extends StdOut {
       return self::$client;
     }
 
-    $pnConfiguration = new PNConfiguration();
-    $pnConfiguration->setSubscribeKey("my_sub_key");
-    $pnConfiguration->setPublishKey("my_pub_key");
-    $pnConfiguration->setSecure(false);
+    $keys = json_decode(file_get_contents('pubnub-keys.json'), TRUE);
 
-    self::$client = new PubNub($pnConfiguration);
+    $pnConfiguration = new PNConfiguration();
+    $pnConfiguration->setSubscribeKey($keys['sub']);
+    $pnConfiguration->setPublishKey($keys['pub']);
+
+    self::$client = new PubNubClient($pnConfiguration);
 
     return self::$client;
   }
@@ -29,10 +30,12 @@ class PubNub extends StdOut {
   {
     parent::emit("pubnub/$topic", $msg);
 
-    $result = self::getClient()->publish()
-              ->channel($topic)
-              ->message($msg)
-              ->sync();
+    $result = self::getClient()
+      ->publish()
+      ->message($msg)
+      ->channel($topic)
+      ->usePost(TRUE)
+      ->sync();
   }
 }
 
