@@ -93,7 +93,7 @@ class EmitCommand extends Command
         $ms = substr($ms, 0, -1);
 
         $msg = [];
-        $msg['Date'] = str_replace('+', ":$ms+", date('c', $time));
+        $msg['Date'] = str_replace('+00:00', ".{$ms}Z", date('c', $time));
         $msg['Content-Length'] = $size;
         $msg['Cache-Control'] = 'max-age=' . $sleep/1000000;
         $msg['E-Tag'] = $count;
