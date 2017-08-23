@@ -1,6 +1,6 @@
 <?php
 
-namespace AO\gateway;
+namespace AO\Gateway;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
