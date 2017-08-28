@@ -127,6 +127,10 @@ class EmitCommand extends Command
           $channel = new Gateway\PubNub();
           break;
 
+        case 'ably':
+          $channel = new Gateway\Ably();
+          break;
+
         default:
           $channel = new Gateway\StdOut();
           break;
