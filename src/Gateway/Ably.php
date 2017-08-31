@@ -16,7 +16,7 @@ class Ably extends StdOut {
 
     $keys = json_decode(file_get_contents('ably-keys.json'), TRUE);
 
-    self::$client = new AblyRest($keys['appkey']);
+    self::$client = new AblyRest(["key" => $keys['appkey'], "environment" => $keys['environment']]);
 
     return self::$client;
   }
